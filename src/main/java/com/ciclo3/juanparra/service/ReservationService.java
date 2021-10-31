@@ -13,22 +13,37 @@ import com.ciclo3.juanparra.repository.StatusReservation;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
- // servicio reservations
+
+/* servicio reservations
+*
+ */
 @Service
 
 public class ReservationService {
-//metodo get
+    /*
+     metodo get
+     */
+
     @Autowired
     private ReservationRepository reservationRepository;
-// conseguir all
+
+    /*conseguir all
+    *
+    */
     public List<Reservation> getAll() {
         return reservationRepository.getAll();
     }
-//optional
+
+    /*
+     optional
+     */
     public Optional<Reservation> getReservation(int reservationId) {
         return reservationRepository.getReservation(reservationId);
     }
-// save reservation
+
+    /* 
+    save reservation
+    */
     public Reservation save(Reservation rsvt) {
         if (rsvt.getIdReservation() == null) {
             return reservationRepository.save(rsvt);
@@ -42,7 +57,10 @@ public class ReservationService {
             }
         }
     }
-//update
+
+    /*
+     update
+     */
     public Reservation update(Reservation rsvt) {
         if (rsvt.getIdReservation() != null) {
             Optional<Reservation> consulta = reservationRepository.getReservation(rsvt.getIdReservation());
@@ -65,7 +83,11 @@ public class ReservationService {
             return rsvt;
         }
     }
-//Delete
+
+    /* 
+    Delete 
+    *
+    */
     public boolean deleteReservation(int reservationId) {
         Boolean rBoolean = getReservation(reservationId).map(message -> {
             reservationRepository.delete(message);
@@ -74,33 +96,40 @@ public class ReservationService {
         return rBoolean;
     }
 
-    public StatusReservation reporteStatusServicio (){
-        List<Reservation>completed= reservationRepository.ReservacionStatusRepositorio("completed");
-        List<Reservation>cancelled= reservationRepository.ReservacionStatusRepositorio("cancelled");
-        
-        return new StatusReservation(completed.size(), cancelled.size() );
+    public StatusReservation reporteStatusServicio() {
+        List<Reservation> completed = reservationRepository.ReservacionStatusRepositorio("completed");
+        List<Reservation> cancelled = reservationRepository.ReservacionStatusRepositorio("cancelled");
+
+        return new StatusReservation(completed.size(), cancelled.size());
     }
- 
-    public List<Reservation> reporteTiempoServicio (String datoA, String datoB){
-        SimpleDateFormat parser = new SimpleDateFormat ("yyyy-MM-dd");
-        
+
+    /* 
+    reporte tiempo
+    */
+    public List<Reservation> reporteTiempoServicio(String datoA, String datoB) {
+        SimpleDateFormat parser = new SimpleDateFormat("yyyy-MM-dd");
+
         Date datoUno = new Date();
         Date datoDos = new Date();
-        
-        try{
-             datoUno = parser.parse(datoA);
-             datoDos = parser.parse(datoB);
-        }catch(ParseException evt){
+
+        try {
+            datoUno = parser.parse(datoA);
+            datoDos = parser.parse(datoB);
+        } catch (ParseException evt) {
             evt.printStackTrace();
-        }if(datoUno.before(datoDos)){
+        }
+        if (datoUno.before(datoDos)) {
             return reservationRepository.ReservacionTiempoRepositorio(datoUno, datoDos);
-        }else{
+        } else {
             return new ArrayList<>();
 
-        } 
+        }
     }
+    /*
+     reporete clientes
+     */
 
-    public List<CountClient> reporteClientesServicio(){
+    public List<CountClient> reporteClientesServicio() {
         return reservationRepository.getClientesRepositorio();
     }
 
